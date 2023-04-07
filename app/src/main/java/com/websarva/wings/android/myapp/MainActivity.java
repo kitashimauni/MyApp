@@ -3,6 +3,8 @@ package com.websarva.wings.android.myapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -24,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // アクションバーの設定
         Toolbar toolbar  = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        // ViewPagerの設定
         viewPager2 = findViewById(R.id.pager);
         pagerAdapter = new MainFragmentStateAdapter(this);
         viewPager2.setAdapter(pagerAdapter);
@@ -33,6 +38,18 @@ public class MainActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager2,
                 (tab, position) -> tab.setText(position == 0 ? "タスク" : "時間割")
         ).attach();
+        // FABの設定
+        FloatingActionButton fab = findViewById(R.id.add_button);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(android.R.id.content ,TaskAddFragment.newInstance("", ""));
+                fragmentTransaction.commit();
+            }
+        });
     }
 
     @Override
@@ -51,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
     @Override
     protected void onStop() {
