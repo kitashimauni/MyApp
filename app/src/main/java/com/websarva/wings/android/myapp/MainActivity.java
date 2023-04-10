@@ -20,9 +20,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ViewPager2 viewPager2;
-    private FragmentStateAdapter pagerAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,14 +27,7 @@ public class MainActivity extends AppCompatActivity {
         // アクションバーの設定
         Toolbar toolbar  = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // ViewPagerの設定
-        viewPager2 = findViewById(R.id.pager);
-        pagerAdapter = new MainFragmentStateAdapter(this);
-        viewPager2.setAdapter(pagerAdapter);
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        new TabLayoutMediator(tabLayout, viewPager2,
-                (tab, position) -> tab.setText(position == 0 ? "タスク" : "時間割")
-        ).attach();
+        /*
         // FABの設定
         FloatingActionButton fab = findViewById(R.id.add_button);
         fab.setOnClickListener(new View.OnClickListener(){
@@ -50,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
             }
         });
+        */
     }
 
     @Override

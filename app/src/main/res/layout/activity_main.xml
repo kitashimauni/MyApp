@@ -21,22 +21,19 @@
             android:background="@color/teal_200"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
+            android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toolbar"/>
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/pager"
+        <fragment
+            android:id="@+id/nav_host_fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/tab_layout"
-            tools:layout_editor_absoluteX="0dp"/>
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_below="@id/toolbar"
+            app:navGraph="@navigation/navigation_graph"
+            app:defaultNavHost="true"/>
 
     </RelativeLayout>
 
