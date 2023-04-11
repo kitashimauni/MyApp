@@ -11,6 +11,7 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ public class TaskAddFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private AppCompatActivity activity;
+    private MainActivity activity;
 
     public TaskAddFragment() {
         // Required empty public constructor
@@ -69,7 +70,6 @@ public class TaskAddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        activity = (AppCompatActivity) getActivity();
     }
 
     @Override
@@ -81,7 +81,8 @@ public class TaskAddFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        this.setupBackButton();
+        activity = (MainActivity) getActivity();
+        activity.setupBackButton("");
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
@@ -92,31 +93,11 @@ public class TaskAddFragment extends Fragment {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 if(menuItem.getItemId() == android.R.id.home) {
-                    return backToStart();
+                    return activity.backToStart();
                 }
-                return false;
+                return true;
             }
-        });
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
-
-    private void setupBackButton(){
-        ActionBar actionBar = activity.getSupportActionBar();
-        if(actionBar == null) return;
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setTitle("");
-    }
-
-    private boolean backToStart(){
-        ActionBar actionBar = activity.getSupportActionBar();
-        if(actionBar == null) return false;
-        actionBar.setTitle(R.string.app_name);
-        actionBar.setDisplayHomeAsUpEnabled(false);
-        FragmentManager fragmentManager = getParentFragmentManager();
-        if(fragmentManager.getBackStackEntryCount() > 0){
-            fragmentManager.popBackStack();
-        }
-        return true;
-    }
-
+    
 }

@@ -1,6 +1,7 @@
 package com.websarva.wings.android.myapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
@@ -66,11 +67,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
     @Override
     protected void onStop() {
         super.onStop();
     }
 
+    public void setupBackButton(String title){
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar == null) return;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setTitle(title);
+    }
+
+    public boolean backToStart(){
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar == null) return false;
+        actionBar.setTitle(R.string.app_name);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if(fragmentManager.getBackStackEntryCount() > 0){
+            fragmentManager.popBackStack();
+        }
+        return true;
+    }
 }
