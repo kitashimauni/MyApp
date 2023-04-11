@@ -40,15 +40,12 @@ public class MainActivity extends AppCompatActivity {
         ).attach();
         // FABの設定
         FloatingActionButton fab = findViewById(R.id.add_button);
-        fab.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.replace(android.R.id.content ,TaskAddFragment.newInstance("", ""));
-                fragmentTransaction.commit();
-            }
+        fab.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(android.R.id.content ,TaskAddFragment.newInstance("", ""));
+            fragmentTransaction.addToBackStack("add_task");
+            fragmentTransaction.commit();
         });
     }
 

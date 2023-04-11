@@ -6,16 +6,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +36,8 @@ public class TaskAddFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private AppCompatActivity activity;
 
     public TaskAddFragment() {
         // Required empty public constructor
@@ -63,7 +69,7 @@ public class TaskAddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        setHasOptionsMenu(true);
+        activity = (AppCompatActivity) getActivity();
     }
 
     @Override
@@ -76,11 +82,24 @@ public class TaskAddFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         this.setupBackButton();
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId() == android.R.id.home) {
+                    return backToStart();
+                }
+                return false;
+            }
+        });
     }
 
     private void setupBackButton(){
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if(activity == null) return;
         ActionBar actionBar = activity.getSupportActionBar();
         if(actionBar == null) return;
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -88,12 +107,16 @@ public class TaskAddFragment extends Fragment {
         actionBar.setTitle("");
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == android.R.id.home) {
-            FragmentManager fragmentManager = getParentFragmentManager();
+    private boolean backToStart(){
+        ActionBar actionBar = activity.getSupportActionBar();
+        if(actionBar == null) return false;
+        actionBar.setTitle(R.string.app_name);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+        FragmentManager fragmentManager = getParentFragmentManager();
+        if(fragmentManager.getBackStackEntryCount() > 0){
             fragmentManager.popBackStack();
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
+
 }
