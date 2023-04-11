@@ -81,8 +81,6 @@ public class TaskAddFragment extends Fragment {
     private void setupBackButton(){
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if(activity == null) return;
-        Toolbar toolbar = activity.findViewById(R.id.toolbar_task_add);
-        activity.setSupportActionBar(toolbar);
         ActionBar actionBar = activity.getSupportActionBar();
         if(actionBar == null) return;
         actionBar.setDisplayHomeAsUpEnabled(true);
