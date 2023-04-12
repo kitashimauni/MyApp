@@ -6,6 +6,7 @@
     <string name="help">ヘルプ</string>
     <string name="task">タスク</string>
     <string name="time_table">時間割</string>
+    <string name="add">追加</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

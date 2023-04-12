@@ -82,12 +82,12 @@ public class TaskAddFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         activity = (MainActivity) getActivity();
-        activity.setupBackButton("");
+        activity.setupBackButton("タスクを追加");
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-
+                menuInflater.inflate(R.menu.task_add_option, menu);
             }
 
             @Override
@@ -99,5 +99,4 @@ public class TaskAddFragment extends Fragment {
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
-    
 }

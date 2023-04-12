@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.room.Room;
@@ -12,7 +13,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
     private FragmentStateAdapter pagerAdapter;
+    private boolean showMainMenu = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +51,25 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.addToBackStack("add_task");
             fragmentTransaction.commit();
         });
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu){
-        getMenuInflater().inflate(R.menu.option, menu);
-        return true;
+        addMenuProvider(new MenuProvider() {
+            @Override
+            public void onPrepareMenu(@NonNull Menu menu) {
+                MenuProvider.super.onPrepareMenu(menu);
+                MenuItem item_1 = menu.findItem(R.id.option1);
+                MenuItem item_2 = menu.findItem(R.id.option2);
+                item_1.setVisible(showMainMenu);
+                item_2.setVisible(showMainMenu);
+            }
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.main_option, menu);
+            }
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -78,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
         actionBar.setTitle(title);
+        showMainMenu = false;
+        invalidateMenu();
     }
 
     public boolean backToStart(){
@@ -89,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         if(fragmentManager.getBackStackEntryCount() > 0){
             fragmentManager.popBackStack();
         }
+        showMainMenu = true;
+        invalidateMenu();
         return true;
     }
 }
