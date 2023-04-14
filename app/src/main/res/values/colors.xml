@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="chuosen">#FFFF5722</color>
     <color name="clear">#00000000</color>
+    <color name="gray">#CACACA</color>
 </resources>

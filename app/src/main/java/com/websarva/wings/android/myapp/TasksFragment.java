@@ -3,9 +3,13 @@ package com.websarva.wings.android.myapp;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,12 +79,23 @@ public class TasksFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        ArrayList<String> items = new ArrayList<>();
-        items.add("あ");
-        items.add("い");
-        items.add("う");
-        ArrayAdapter<?> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1 , items);
-        ListView listView = (ListView) view.findViewById(R.id.list_view);
-        listView.setAdapter(adapter);
+        RecyclerView recyclerView = view.findViewById(R.id.list_view);
+        if(recyclerView == null) return;
+        TasksViewAdapter adapter = new TasksViewAdapter(this.createDataset());
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireActivity());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration decoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
+        recyclerView.addItemDecoration(decoration);
+    }
+
+    private List<RowData> createDataset(){
+        List<RowData> dataset = new ArrayList<>();
+        for(int i = 0; i < 10; i++){
+            RowData rowData = new RowData();
+            rowData.setTitle(i + "個め");
+            dataset.add(rowData);
+        }
+        return dataset;
     }
 }
