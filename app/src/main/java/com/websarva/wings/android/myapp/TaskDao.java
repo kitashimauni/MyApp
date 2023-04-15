@@ -26,4 +26,6 @@ public interface TaskDao{
     List<Task> getAfter(Calendar calendar);
     @Query("SELECT * FROM task WHERE finished == :bool")
     List<Task> getAllTasksFinished(boolean bool);
+    @Query("SELECT * FROM task WHERE finished == :bool ORDER BY dead_line")
+    List<Task> getAllTasksFinishedOrder(boolean bool);
 }

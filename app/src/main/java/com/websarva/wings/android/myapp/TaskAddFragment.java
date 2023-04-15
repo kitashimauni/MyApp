@@ -20,7 +20,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Calendar;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,10 +98,30 @@ public class TaskAddFragment extends Fragment {
 
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId() == android.R.id.home) {
-                    return activity.backToStart();
+                switch (menuItem.getItemId()){
+                    case android.R.id.home:
+                        return activity.backToStart();
+                    case R.id.add_to_task_button:
+                        // addするTaskの作成
+                        Task task = new Task();
+                        task.create_at = Calendar.getInstance();
+                        task.updated_at = Calendar.getInstance();
+                        EditText text = (EditText) view.findViewById(R.id.title_name);
+                        task.task_name = text.getText().toString();
+                        text = (EditText) view.findViewById(R.id.detail_text);
+                        task.task_detail = text.getText().toString();
+                        task.dead_line = Calendar.getInstance();
+                        task.finished = false;
+                        TaskDaoHelper taskDaoHelper = new TaskDaoHelper();
+                        if(!taskDaoHelper.AddTask(task, activity.taskDao)){
+                            return false;
+                        }
+                        // getf;
+                        // tasksFragment.recyclerView.getAdapter().AddTask();
+                        // tasksFragment.ReloadRecyclerView();
+                        return activity.backToStart();
                 }
-                return true;
+                return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }

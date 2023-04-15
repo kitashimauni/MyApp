@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentStateAdapter pagerAdapter;
     private boolean showMainMenu = true;
 
+    public TaskDao taskDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tasks").build();
-        TaskDao taskDao = db.taskDao();
+        taskDao = db.taskDao();
         // List<Task> tasks_not_finished = taskDao.getAllTasksFinished(false);
         // List<Task> tasks_finished = taskDao.getAllTasksFinished(true);
 

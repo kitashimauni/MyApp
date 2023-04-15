@@ -15,6 +15,12 @@ public class TasksViewAdapter extends RecyclerView.Adapter<TasksViewHolder> {
         this.list = list;
     }
 
+    public void AddTask(Task task){
+        RowData rowData = new RowData();
+        rowData.setTitle(task.task_name);
+        list.add(rowData);
+    }
+
     @NonNull
     @Override
     public TasksViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

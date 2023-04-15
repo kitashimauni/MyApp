@@ -33,4 +33,15 @@ public class Task {
 
     @ColumnInfo(name = "finished")
     public boolean finished;
+
+    /*
+    public Task(String task_name, String task_detail, Calendar create_at, Calendar updated_at, Calendar dead_line, boolean finished){
+        this.task_name = task_name;
+        this.task_detail = task_detail;
+        this.create_at = create_at;
+        this.updated_at = create_at;
+        this.dead_line = dead_line;
+        this.finished = finished;
+    }
+    */
 }

@@ -38,6 +38,12 @@ public class TasksFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private MainActivity activity;
+
+    public RecyclerView recyclerView;
+
+    private List<RowData> rowData;
+
     public TasksFragment() {
         // Required empty public constructor
     }
@@ -68,6 +74,7 @@ public class TasksFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = (MainActivity) getActivity();
     }
 
     @Override
@@ -79,7 +86,7 @@ public class TasksFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        RecyclerView recyclerView = view.findViewById(R.id.list_view);
+        recyclerView = view.findViewById(R.id.list_view);
         if(recyclerView == null) return;
         TasksViewAdapter adapter = new TasksViewAdapter(this.createDataset());
         recyclerView.setAdapter(adapter);
@@ -89,13 +96,26 @@ public class TasksFragment extends Fragment {
         recyclerView.addItemDecoration(decoration);
     }
 
-    private List<RowData> createDataset(){
+    public List<RowData> createDataset(){
         List<RowData> dataset = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
+        List<Task> tasks;
+        TaskDaoHelper taskDaoHelper = new TaskDaoHelper();
+        tasks = taskDaoHelper.GetTaskAscendingOrder(activity.taskDao);
+        if(tasks == null)
+            Log.d("Error", "ぬるぽ");
+        for(int i = 0; i < tasks.size(); i++){
             RowData rowData = new RowData();
-            rowData.setTitle(i + "個め");
+            rowData.setTitle(tasks.get(i).task_name);
             dataset.add(rowData);
         }
         return dataset;
+    }
+
+    public void ReloadRecyclerView(){
+        try {
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }catch (Exception e){
+            Log.e("Error", "失敗");
+        }
     }
 }
