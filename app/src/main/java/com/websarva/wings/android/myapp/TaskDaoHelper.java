@@ -34,6 +34,7 @@ public class TaskDaoHelper {
                     taskList = taskDao.getAllTasksFinishedOrder(false);
                 }catch (Exception e){
                     Log.e("Error", "DataBaseからの情報取得に失敗");
+                    Log.e("Error", e.getMessage());
                 }
                 if(taskList.isEmpty())
                     Log.d("Error", "取得に失敗");
