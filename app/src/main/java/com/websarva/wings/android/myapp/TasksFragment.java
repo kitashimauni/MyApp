@@ -6,9 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -17,6 +19,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,12 +81,56 @@ public class TasksFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+        /* テスト用
         ArrayList<String> items = new ArrayList<>();
         items.add("あ");
         items.add("い");
         items.add("う");
-        ArrayAdapter<?> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1 , items);
+        */
+        ArrayList<Task> items = new ArrayList<>();
+        MainActivity activity = (MainActivity)getActivity();
+        if(activity==null){
+            Log.e("null", "null in TasksFragment");
+            return;
+        }
+        TaskDao taskDao = activity.taskDao;
+        // カスタマイズしたアダプターによりTaskからリストを作成可能+リストのカスタマイズが簡単に
+        // ArrayAdapter<?> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1 , items);
+        TaskListAdapter adapter = new TaskListAdapter(this.getContext(), android.R.layout.simple_list_item_1, items);
         ListView listView = (ListView) view.findViewById(R.id.list_view);
         listView.setAdapter(adapter);
+        Disposable disposable = taskDao.getAllTasksFinished(false) // データベースクエリを実行し、Singleを取得
+            .subscribeOn(Schedulers.io()) // バックグラウンドスレッドで実行
+            .observeOn(AndroidSchedulers.mainThread()) // メインスレッドで結果を処理
+            .subscribe(
+                tasks -> {
+                    // 成功時の処理: クエリからのタスクリストを使用
+                    // tasksはList<Task>型で、クエリの結果が格納されています
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (Task task : tasks) {
+                                // タスクを処理するコード
+                                // Log.d("", task.task_name);
+                                items.add(task);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                    Log.d("Fragment", "2");
+                },
+                    error -> {
+                        // エラー時の処理: エラーハンドリングを行うことが重要です
+                        // エラー情報を取得し、適切な対応を行います
+                        Log.e("Fragment", error.getMessage());
+                    }
+            );
+        // タップ時詳細を表示
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
     }
 }

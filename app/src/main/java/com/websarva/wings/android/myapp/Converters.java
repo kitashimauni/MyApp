@@ -8,13 +8,13 @@ import java.util.Calendar;
 
 public class Converters {
     @TypeConverter
-    public static Calendar fromTimestamp(Long value){
+    public static Calendar fromTimestamp(long value){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(value);
         return calendar;
     }
     @TypeConverter
-    public static Long calendarToTimestamp(Calendar calendar){
+    public static long calendarToTimestamp(Calendar calendar){
         return calendar == null ? null : calendar.getTimeInMillis();
     }
 }
