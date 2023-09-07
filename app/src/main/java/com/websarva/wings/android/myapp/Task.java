@@ -1,6 +1,5 @@
 package com.websarva.wings.android.myapp;
 
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -30,9 +29,19 @@ public class Task {
     @ColumnInfo(name = "updated_at")
     public Calendar updated_at;
     @ColumnInfo(name = "dead_line")
-    @Nullable
     public Calendar dead_line;
 
     @ColumnInfo(name = "finished")
-    public boolean finished = false;
+    public boolean finished;
+
+    /*
+    public Task(String task_name, String task_detail, Calendar create_at, Calendar updated_at, Calendar dead_line, boolean finished){
+        this.task_name = task_name;
+        this.task_detail = task_detail;
+        this.create_at = create_at;
+        this.updated_at = create_at;
+        this.dead_line = dead_line;
+        this.finished = finished;
+    }
+    */
 }

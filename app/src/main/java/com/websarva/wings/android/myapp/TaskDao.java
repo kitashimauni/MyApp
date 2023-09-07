@@ -22,13 +22,13 @@ public interface TaskDao{
     @Update
     public Completable updateTasks(Task... task);
     @Delete
-    public Completable deleteTasks(Task... task);;
+    public Completable deleteTasks(Task... task);
     @Query("SELECT * FROM task")
-     public Single<List<Task>> getAllTasks();
+    Single<List<Task>> getAllTasks();
     @Query("SELECT * FROM task WHERE create_at < :calendar")
-    public Single<List<Task>> getAfter(Calendar calendar);
+    Single<List<Task>> getAfter(Calendar calendar);
     @Query("SELECT * FROM task WHERE finished == :bool")
-    public Single<List<Task>> getAllTasksFinished(boolean bool);
-    @Query("SELECT * FROM task WHERE task_name == :name")
-    public Single<List<Task>> getTaskFromName(String name);
+    Single<List<Task>> getAllTasksFinished(boolean bool);
+    @Query("SELECT * FROM task WHERE finished == :bool ORDER BY dead_line")
+    Single<List<Task>> getAllTasksFinishedOrder(boolean bool);
 }

@@ -3,7 +3,10 @@ package com.websarva.wings.android.myapp;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -40,6 +43,8 @@ public class TasksFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private MainActivity activity;
+
     public TasksFragment() {
         // Required empty public constructor
     }
@@ -70,6 +75,10 @@ public class TasksFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = (MainActivity) getActivity();
+        if(activity==null){
+            Log.e("null", "null in TasksFragment");
+        }
     }
 
     @Override
@@ -81,50 +90,14 @@ public class TasksFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        /* テスト用
-        ArrayList<String> items = new ArrayList<>();
-        items.add("あ");
-        items.add("い");
-        items.add("う");
-        */
-        ArrayList<Task> items = new ArrayList<>();
-        MainActivity activity = (MainActivity)getActivity();
-        if(activity==null){
-            Log.e("null", "null in TasksFragment");
-            return;
-        }
-        TaskDao taskDao = activity.taskDao;
+        TaskManager taskManager = activity.getTaskManager();
         // カスタマイズしたアダプターによりTaskからリストを作成可能+リストのカスタマイズが簡単に
         // ArrayAdapter<?> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1 , items);
-        TaskListAdapter adapter = new TaskListAdapter(this.getContext(), android.R.layout.simple_list_item_1, items);
+        taskManager.setTaskListAdapter(this.getContext(), android.R.layout.simple_list_item_1);
         ListView listView = (ListView) view.findViewById(R.id.list_view);
-        listView.setAdapter(adapter);
-        Disposable disposable = taskDao.getAllTasksFinished(false) // データベースクエリを実行し、Singleを取得
-            .subscribeOn(Schedulers.io()) // バックグラウンドスレッドで実行
-            .observeOn(AndroidSchedulers.mainThread()) // メインスレッドで結果を処理
-            .subscribe(
-                tasks -> {
-                    // 成功時の処理: クエリからのタスクリストを使用
-                    // tasksはList<Task>型で、クエリの結果が格納されています
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            for (Task task : tasks) {
-                                // タスクを処理するコード
-                                // Log.d("", task.task_name);
-                                items.add(task);
-                            }
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-                    Log.d("Fragment", "2");
-                },
-                    error -> {
-                        // エラー時の処理: エラーハンドリングを行うことが重要です
-                        // エラー情報を取得し、適切な対応を行います
-                        Log.e("Fragment", error.getMessage());
-                    }
-            );
+        listView.setAdapter(taskManager.getTaskListAdapter());
+        // タスクのロード
+        taskManager.loadTasks();
         // タップ時詳細を表示
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
