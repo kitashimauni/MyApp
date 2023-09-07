@@ -20,15 +20,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager2;
-    private FragmentStateAdapter pagerAdapter;
+    public FragmentStateAdapter pagerAdapter;
     private boolean showMainMenu = true;
 
     public TaskDao taskDao;
 
+    private TaskManager taskManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +82,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tasks").build();
         taskDao = db.taskDao();
-        // List<Task> tasks_not_finished = taskDao.getAllTasksFinished(false);
-        // List<Task> tasks_finished = taskDao.getAllTasksFinished(true);
-
-
+        taskManager = new TaskManager(this);
+        taskManager.setTaskDao(taskDao);
     }
 
     @Override
@@ -112,5 +113,9 @@ public class MainActivity extends AppCompatActivity {
         showMainMenu = true;
         invalidateMenu();
         return true;
+    }
+
+    public TaskManager getTaskManager(){
+        return taskManager;
     }
 }

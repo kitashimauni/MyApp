@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -21,6 +22,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,10 +44,6 @@ public class TasksFragment extends Fragment {
     private String mParam2;
 
     private MainActivity activity;
-
-    public RecyclerView recyclerView;
-
-    private List<RowData> rowData;
 
     public TasksFragment() {
         // Required empty public constructor
@@ -75,6 +76,9 @@ public class TasksFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         activity = (MainActivity) getActivity();
+        if(activity==null){
+            Log.e("null", "null in TasksFragment");
+        }
     }
 
     @Override
@@ -86,36 +90,20 @@ public class TasksFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        recyclerView = view.findViewById(R.id.list_view);
-        if(recyclerView == null) return;
-        TasksViewAdapter adapter = new TasksViewAdapter(this.createDataset());
-        recyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(requireActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        DividerItemDecoration decoration = new DividerItemDecoration(recyclerView.getContext(), linearLayoutManager.getOrientation());
-        recyclerView.addItemDecoration(decoration);
-    }
+        TaskManager taskManager = activity.getTaskManager();
+        // カスタマイズしたアダプターによりTaskからリストを作成可能+リストのカスタマイズが簡単に
+        // ArrayAdapter<?> adapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_list_item_1 , items);
+        taskManager.setTaskListAdapter(this.getContext(), android.R.layout.simple_list_item_1);
+        ListView listView = (ListView) view.findViewById(R.id.list_view);
+        listView.setAdapter(taskManager.getTaskListAdapter());
+        // タスクのロード
+        taskManager.loadTasks();
+        // タップ時詳細を表示
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-    public List<RowData> createDataset(){
-        List<RowData> dataset = new ArrayList<>();
-        List<Task> tasks;
-        TaskDaoHelper taskDaoHelper = new TaskDaoHelper();
-        tasks = taskDaoHelper.GetTaskAscendingOrder(activity.taskDao);
-        if(tasks == null)
-            Log.d("Error", "ぬるぽ");
-        for(int i = 0; i < tasks.size(); i++){
-            RowData rowData = new RowData();
-            rowData.setTitle(tasks.get(i).task_name);
-            dataset.add(rowData);
-        }
-        return dataset;
-    }
-
-    public void ReloadRecyclerView(){
-        try {
-            recyclerView.getAdapter().notifyDataSetChanged();
-        }catch (Exception e){
-            Log.e("Error", "失敗");
-        }
+            }
+        });
     }
 }

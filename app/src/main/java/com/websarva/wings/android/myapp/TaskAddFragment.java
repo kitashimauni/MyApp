@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +29,10 @@ import java.util.Calendar;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +51,7 @@ public class TaskAddFragment extends Fragment {
     private String mParam2;
 
     private MainActivity activity;
+    private TaskManager taskManager;
 
     public TaskAddFragment() {
         // Required empty public constructor
@@ -76,6 +83,10 @@ public class TaskAddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = (MainActivity) getActivity();
+        if(activity==null){
+            Log.e("null", "null in TasksFragment");
+        }
     }
 
     @Override
@@ -89,6 +100,8 @@ public class TaskAddFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         activity = (MainActivity) getActivity();
         activity.setupBackButton("タスクを追加");
+        taskManager = activity.getTaskManager();
+        // adapter = fragment.adapter;
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
@@ -112,13 +125,7 @@ public class TaskAddFragment extends Fragment {
                         task.task_detail = text.getText().toString();
                         task.dead_line = Calendar.getInstance();
                         task.finished = false;
-                        TaskDaoHelper taskDaoHelper = new TaskDaoHelper();
-                        if(!taskDaoHelper.AddTask(task, activity.taskDao)){
-                            return false;
-                        }
-                        // getf;
-                        // tasksFragment.recyclerView.getAdapter().AddTask();
-                        // tasksFragment.ReloadRecyclerView();
+                        taskManager.addTask(task);
                         return activity.backToStart();
                 }
                 return false;

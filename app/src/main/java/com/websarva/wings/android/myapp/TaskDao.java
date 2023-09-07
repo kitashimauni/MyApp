@@ -12,20 +12,23 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Date;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+
 @Dao
 public interface TaskDao{
     @Insert
-    void insertAll(Task... task);
+    public Completable insertAll(Task... task);
     @Update
-    void updateTasks(Task... task);
+    public Completable updateTasks(Task... task);
     @Delete
-    void deleteTasks(Task... task);
+    public Completable deleteTasks(Task... task);
     @Query("SELECT * FROM task")
-    List<Task> getAllTasks();
+    Single<List<Task>> getAllTasks();
     @Query("SELECT * FROM task WHERE create_at < :calendar")
-    List<Task> getAfter(Calendar calendar);
+    Single<List<Task>> getAfter(Calendar calendar);
     @Query("SELECT * FROM task WHERE finished == :bool")
-    List<Task> getAllTasksFinished(boolean bool);
+    Single<List<Task>> getAllTasksFinished(boolean bool);
     @Query("SELECT * FROM task WHERE finished == :bool ORDER BY dead_line")
-    List<Task> getAllTasksFinishedOrder(boolean bool);
+    Single<List<Task>> getAllTasksFinishedOrder(boolean bool);
 }
