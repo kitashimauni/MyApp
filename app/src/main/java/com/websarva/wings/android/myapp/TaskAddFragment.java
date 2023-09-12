@@ -1,11 +1,14 @@
 package com.websarva.wings.android.myapp;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -20,9 +23,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -52,6 +58,7 @@ public class TaskAddFragment extends Fragment {
 
     private MainActivity activity;
     private TaskManager taskManager;
+    private ConstraintLayout layout;
 
     public TaskAddFragment() {
         // Required empty public constructor
@@ -101,7 +108,38 @@ public class TaskAddFragment extends Fragment {
         activity = (MainActivity) getActivity();
         activity.setupBackButton("タスクを追加");
         taskManager = activity.getTaskManager();
-        // adapter = fragment.adapter;
+
+        EditText text_name = (EditText) view.findViewById(R.id.title_name);
+        EditText text_detail = (EditText) view.findViewById(R.id.detail_text);
+        activity.setKeyboardHider(text_name);
+        activity.setKeyboardHider(text_detail);
+
+        DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2023, 8,  9);
+        // datePickerDialogFragment.setCalender(calendar);
+        // datePickerDialogFragment.show(activity.getSupportFragmentManager(), "datePicker");
+
+
+        AppCompatTextView deadline_date = view.findViewById(R.id.date);
+        datePickerDialogFragment.setAppCompatTextView(deadline_date);
+        deadline_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerDialogFragment.show(activity.getSupportFragmentManager(), "datePicker");
+            }
+        });
+
+        TimePickerDialogFragment timePickerDialogFragment = new TimePickerDialogFragment();
+        AppCompatTextView deadline_time = view.findViewById(R.id.time);
+        timePickerDialogFragment.setTextView(deadline_time);
+        deadline_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePickerDialogFragment.show(activity.getSupportFragmentManager(), "TimePicker");
+            }
+        });
+
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
@@ -117,14 +155,9 @@ public class TaskAddFragment extends Fragment {
                     case R.id.add_to_task_button:
                         // addするTaskの作成
                         Task task = new Task();
-                        task.create_at = Calendar.getInstance();
-                        task.updated_at = Calendar.getInstance();
-                        EditText text = (EditText) view.findViewById(R.id.title_name);
-                        task.task_name = text.getText().toString();
-                        text = (EditText) view.findViewById(R.id.detail_text);
-                        task.task_detail = text.getText().toString();
-                        task.dead_line = Calendar.getInstance();
-                        task.finished = false;
+                        task.task_name = text_name.getText().toString();
+                        task.task_detail = text_detail.getText().toString();
+                        task.dead_line = datePickerDialogFragment.getCalendar();
                         taskManager.addTask(task);
                         return activity.backToStart();
                 }

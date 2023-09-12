@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -34,6 +35,8 @@ public class TaskManager {
         return taskListAdapter;
     }
 
+    public ArrayList<Task> getTasks(){return tasks;}
+
     public void loadTasks(){
         tasks.clear();
         Disposable disposable = taskDao.getAllTasksFinished(false) // データベースクエリを実行し、Singleを取得
@@ -60,6 +63,8 @@ public class TaskManager {
     }
 
     public void addTask(Task task){
+        task.create_at = Calendar.getInstance();
+        task.updated_at = Calendar.getInstance();
         try{
             Disposable disposable = taskDao.insertAll(task) // データベースクエリを実行し、Singleを取得
                 .subscribeOn(Schedulers.io()) // バックグラウンドスレッドで実行
