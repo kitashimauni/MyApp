@@ -1,8 +1,11 @@
 package com.websarva.wings.android.myapp;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.DatePicker;
 
 import androidx.annotation.NonNull;
@@ -13,11 +16,12 @@ import java.util.Calendar;
 
 public class DatePickerDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 
-    // private int year = -1;
-    // private int month;
-    // private int dayOfMonth;
+    private String string_year;
+    private String string_month;
+    private String string_dayOfMonth;
     private Calendar calendar;
     private AppCompatTextView textView;
+
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState){
@@ -33,19 +37,27 @@ public class DatePickerDialogFragment extends DialogFragment implements DatePick
 
     public void onDateSet(DatePicker view, int year, int month, int day){
         calendar.set(year, month, day);
+        setText(year, month, day);
+    }
+
+    private void setText(int year, int month, int day){
         if(textView != null){
-            String string = year + getString(R.string.year) + (month + 1) + getString(R.string.month) + day + getString(R.string.day) ;
+            String string = year + string_year + (month + 1) + string_month + day + string_dayOfMonth ;
             textView.setText(string);
         }
     }
 
+    public void setString(String string_year, String string_month, String string_dayOfMonth) {
+        this.string_year = string_year;
+        this.string_month = string_month;
+        this.string_dayOfMonth = string_dayOfMonth;
+    }
+
     public void setCalender(Calendar calendar){
         this.calendar = calendar;
+        setText(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
-    public Calendar getCalendar(){
-        return calendar;
-    }
-    public void setAppCompatTextView(AppCompatTextView textView){
+    public void setTextView(AppCompatTextView textView){
         this.textView = textView;
     }
 }
