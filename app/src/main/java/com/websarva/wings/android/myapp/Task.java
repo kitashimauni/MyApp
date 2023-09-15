@@ -32,7 +32,7 @@ public class Task {
     public Calendar dead_line;
 
     @ColumnInfo(name = "finished")
-    public boolean finished;
+    public boolean finished = false;
 
     /*
     public Task(String task_name, String task_detail, Calendar create_at, Calendar updated_at, Calendar dead_line, boolean finished){

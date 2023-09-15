@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/task_add_main_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +9,22 @@
     android:background="@color/white"
     android:clickable="true"
     android:focusable="true"
+    tools:focusable="true"
+    tools:focusableInTouchMode="true"
     tools:context=".TaskAddFragment">
+
+    <!--
+    <View
+        android:id="@+id/dummy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp"
+        android:background="@android:color/transparent"
+
+        android:focusable="true"
+        tools:focusable="true"
+        tools:focusableInTouchMode="true"/>
+    -->
 
     <EditText
         android:id="@+id/title_name"
@@ -20,15 +36,18 @@
         android:layout_margin="15dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:ignore="Autofill"/>
+        tools:ignore="Autofill"
+        tools:focusable="true"
+        tools:focusableInTouchMode="true"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/deadline_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="12dp"
         android:layout_marginRight="20dp"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_name">
@@ -43,19 +62,19 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/dead_line_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/date_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
         android:layout_marginTop="15dp"
         app:layout_constraintTop_toBottomOf="@id/deadline_layout"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -64,31 +83,63 @@
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="6"
-            android:gravity="center_horizontal"
+            android:layout_height="match_parent"
+            android:ems="7"
             android:text="2023年4月13日"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:background="@color/gray"
-            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            android:layout_marginStart="40dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/time" />
+            app:layout_constraintRight_toLeftOf="@id/time"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0.5"/>
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:ems="3"
             android:text="10:10"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:background="@color/gray"
-            android:gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/date"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0.5"/>
+
+        <TextView
+            android:id="@+id/all_day"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/allDay"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:layout_marginEnd="7dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/deadline_time_switch"
+            app:layout_constraintVertical_bias="0.5"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/deadline_time_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <EditText
         android:id="@+id/detail_text"

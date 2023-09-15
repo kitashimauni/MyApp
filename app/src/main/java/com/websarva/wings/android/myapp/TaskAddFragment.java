@@ -1,11 +1,15 @@
 package com.websarva.wings.android.myapp;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -20,9 +24,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -52,6 +61,7 @@ public class TaskAddFragment extends Fragment {
 
     private MainActivity activity;
     private TaskManager taskManager;
+    private ConstraintLayout layout;
 
     public TaskAddFragment() {
         // Required empty public constructor
@@ -101,7 +111,70 @@ public class TaskAddFragment extends Fragment {
         activity = (MainActivity) getActivity();
         activity.setupBackButton("タスクを追加");
         taskManager = activity.getTaskManager();
-        // adapter = fragment.adapter;
+
+        EditText text_name = (EditText) view.findViewById(R.id.title_name);
+        EditText text_detail = (EditText) view.findViewById(R.id.detail_text);
+        activity.setKeyboardHider(text_name);
+        activity.setKeyboardHider(text_detail);
+
+        // 期限設定用
+        Calendar calendar = Calendar.getInstance();
+
+        // 期限日付設定
+        DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
+        datePickerDialogFragment.setString(getString(R.string.year), getString(R.string.month), getString(R.string.day));
+        AppCompatTextView deadline_date = view.findViewById(R.id.date);
+        datePickerDialogFragment.setTextView(deadline_date);
+        datePickerDialogFragment.setCalender(calendar);
+        deadline_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerDialogFragment.show(activity.getSupportFragmentManager(), "datePicker");
+            }
+        });
+
+        // 期限時間設定
+        TimePickerDialogFragment timePickerDialogFragment = new TimePickerDialogFragment();
+        AppCompatTextView deadline_time = view.findViewById(R.id.time);
+        timePickerDialogFragment.setTextView(deadline_time);
+        timePickerDialogFragment.setCalendar(calendar);
+        deadline_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePickerDialogFragment.show(activity.getSupportFragmentManager(), "TimePicker");
+            }
+        });
+
+        // 終日スイッチの設定
+        SwitchCompat deadline_all_day_switch = view.findViewById(R.id.deadline_time_switch);
+        deadline_all_day_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    deadline_time.setVisibility(View.INVISIBLE);
+                }else{
+                    deadline_time.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        deadline_all_day_switch.setChecked(true);
+
+        // 期限スイッチの設定
+        SwitchCompat deadline_switch = view.findViewById(R.id.dead_line_switch);
+        // 初期値はオン
+        deadline_switch.setChecked(true);
+        deadline_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    view.findViewById(R.id.date_layout).setVisibility(View.VISIBLE);
+                }else{
+                    // GONEを設定すると詰められる
+                    view.findViewById(R.id.date_layout).setVisibility(View.GONE);
+                }
+            }
+        });
+
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
@@ -117,14 +190,12 @@ public class TaskAddFragment extends Fragment {
                     case R.id.add_to_task_button:
                         // addするTaskの作成
                         Task task = new Task();
-                        task.create_at = Calendar.getInstance();
-                        task.updated_at = Calendar.getInstance();
-                        EditText text = (EditText) view.findViewById(R.id.title_name);
-                        task.task_name = text.getText().toString();
-                        text = (EditText) view.findViewById(R.id.detail_text);
-                        task.task_detail = text.getText().toString();
-                        task.dead_line = Calendar.getInstance();
-                        task.finished = false;
+                        task.task_name = text_name.getText().toString();
+                        task.task_detail = text_detail.getText().toString();
+                        if(deadline_all_day_switch.isChecked()){
+                            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+                        }
+                        task.dead_line = calendar;
                         taskManager.addTask(task);
                         return activity.backToStart();
                 }
