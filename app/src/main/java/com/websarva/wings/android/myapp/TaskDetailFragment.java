@@ -2,11 +2,23 @@ package com.websarva.wings.android.myapp;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,12 +29,14 @@ public class TaskDetailFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM1 = "task";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private int position;
     private String mParam2;
+
+    private MainActivity activity;
 
     public TaskDetailFragment() {
         // Required empty public constructor
@@ -37,10 +51,10 @@ public class TaskDetailFragment extends Fragment {
      * @return A new instance of fragment TaskDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TaskDetailFragment newInstance(String param1, String param2) {
+    public static TaskDetailFragment newInstance(int param1, String param2) {
         TaskDetailFragment fragment = new TaskDetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -50,9 +64,17 @@ public class TaskDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            position = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = (MainActivity) getActivity();
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                activity.backToStart();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -60,5 +82,38 @@ public class TaskDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_task_detail, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        TaskManager taskManager = activity.getTaskManager();
+        Task task = taskManager.getTask(position);
+        TextView title_name = view.findViewById(R.id.detail_title_name);
+        TextView deadline = view.findViewById(R.id.detail_deadline);
+        TextView detail = view.findViewById(R.id.detail_detail);
+        title_name.setText(task.getTask_name());
+        detail.setText(task.getTask_detail());
+        Calendar calendar = task.getDead_line();
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY), minute = calendar.get(Calendar.MINUTE);
+        String string = calendar.get(Calendar.YEAR) + getString(R.string.year) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.month) + calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.day)
+                + " " + (hourOfDay < 10 ? ("0" + hourOfDay) : hourOfDay) + ":" + (minute < 10 ? ("0" + minute) : minute);
+        deadline.setText(string);
+
+        activity.setupBackButton("");
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case android.R.id.home:
+                        return activity.backToStart();
+                }
+                return false;
+            }
+        }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
     }
 }

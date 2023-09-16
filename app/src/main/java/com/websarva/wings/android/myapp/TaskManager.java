@@ -35,7 +35,13 @@ public class TaskManager {
         return taskListAdapter;
     }
 
-    public ArrayList<Task> getTasks(){return tasks;}
+    public ArrayList<Task> getTasks(){
+        return tasks;
+    }
+
+    public Task getTask(int position){
+        return tasks.get(position);
+    }
 
     public void loadTasks(){
         tasks.clear();

@@ -3,6 +3,7 @@ package com.websarva.wings.android.myapp;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -97,6 +98,13 @@ public class TaskAddFragment extends Fragment {
         if(activity==null){
             Log.e("null", "null in TasksFragment");
         }
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                activity.backToStart();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override

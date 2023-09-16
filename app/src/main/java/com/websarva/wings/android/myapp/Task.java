@@ -44,4 +44,16 @@ public class Task {
         this.finished = finished;
     }
     */
+
+    public String getTask_name() {
+        return task_name;
+    }
+
+    public String getTask_detail() {
+        return task_detail;
+    }
+
+    public Calendar getDead_line() {
+        return dead_line;
+    }
 }

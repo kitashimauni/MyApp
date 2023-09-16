@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -109,6 +111,11 @@ public class TasksFragment extends Fragment {
                 Log.d("-", Long.toString(l));
                 Log.d("-",((AppCompatTextView)view).getText().toString());
                 Log.d("-", Integer.toString(taskManager.getTasks().get(i).create_at.get(Calendar.DAY_OF_MONTH)));
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(android.R.id.content ,TaskDetailFragment.newInstance(i, ""));
+                fragmentTransaction.addToBackStack("show_task_detail");
+                fragmentTransaction.commit();
 
             }
         });
