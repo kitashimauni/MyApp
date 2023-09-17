@@ -86,10 +86,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(taskDao == null) {
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tasks").build();
         taskDao = db.taskDao();
         taskManager = new TaskManager(this);
         taskManager.setTaskDao(taskDao);
+        }
     }
 
     @Override
