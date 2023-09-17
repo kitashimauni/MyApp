@@ -99,11 +99,12 @@ public class TaskDetailFragment extends Fragment {
                 + " " + (hourOfDay < 10 ? ("0" + hourOfDay) : hourOfDay) + ":" + (minute < 10 ? ("0" + minute) : minute);
         deadline.setText(string);
 
-        activity.setupBackButton("");
+        activity.setupBackButton("詳細");
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.task_edit_option, menu);
             }
 
             @Override
