@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -25,7 +28,7 @@ import java.util.Calendar;
  * Use the {@link TaskDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TaskDetailFragment extends Fragment {
+public class TaskDetailFragment extends Fragment implements NoticeDialogFragment.NoticeDialogListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +40,10 @@ public class TaskDetailFragment extends Fragment {
     private String mParam2;
 
     private MainActivity activity;
+
+    private TaskManager taskManager;
+
+    private Task task;
 
     public TaskDetailFragment() {
         // Required empty public constructor
@@ -86,8 +93,8 @@ public class TaskDetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        TaskManager taskManager = activity.getTaskManager();
-        Task task = taskManager.getTask(position);
+        taskManager = activity.getTaskManager();
+        task = taskManager.getTask(position);
         TextView title_name = view.findViewById(R.id.detail_title_name);
         TextView deadline = view.findViewById(R.id.detail_deadline);
         TextView detail = view.findViewById(R.id.detail_detail);
@@ -98,6 +105,8 @@ public class TaskDetailFragment extends Fragment {
         String string = calendar.get(Calendar.YEAR) + getString(R.string.year) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.month) + calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.day)
                 + " " + (hourOfDay < 10 ? ("0" + hourOfDay) : hourOfDay) + ":" + (minute < 10 ? ("0" + minute) : minute);
         deadline.setText(string);
+
+        NoticeDialogFragment noticeDialogFragment = new NoticeDialogFragment();
 
         activity.setupBackButton("詳細");
         MenuHost menuHost = requireActivity();
@@ -112,9 +121,21 @@ public class TaskDetailFragment extends Fragment {
                 switch (menuItem.getItemId()){
                     case android.R.id.home:
                         return activity.backToStart();
+                    case R.id.delete_task_button:
+                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                        noticeDialogFragment.show(fragmentManager, "NoticeDialog");
                 }
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialogFragment) {
+        taskManager.deleteTask(task);
+        Toast toast = new Toast(getContext());
+        toast.setText("削除しました");
+        toast.show();
+        activity.backToStart();
     }
 }

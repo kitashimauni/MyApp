@@ -73,10 +73,21 @@ public class TaskManager {
         task.updated_at = Calendar.getInstance();
         try{
             Disposable disposable = taskDao.insertAll(task) // データベースクエリを実行し、Singleを取得
-                .subscribeOn(Schedulers.io()) // バックグラウンドスレッドで実行
-                .observeOn(AndroidSchedulers.mainThread()) // メインスレッドで結果を処理
-                .subscribe(this::loadTasks);
+                    .subscribeOn(Schedulers.io()) // バックグラウンドスレッドで実行
+                    .observeOn(AndroidSchedulers.mainThread()) // メインスレッドで結果を処理
+                    .subscribe(this::loadTasks);
         } catch (Exception e){
+            Log.e("Error", e.getMessage());
+        }
+    }
+
+    public void deleteTask(Task task){
+        try {
+            Disposable disposable = taskDao.deleteTasks(task)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::loadTasks);
+        } catch (Exception e) {
             Log.e("Error", e.getMessage());
         }
     }

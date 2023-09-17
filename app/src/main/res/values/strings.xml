@@ -10,6 +10,9 @@
     <string name="add">追加</string>
     <string name="edit">編集</string>
     <string name="delete">削除</string>
+    <string name="ask_delete">削除しますか</string>
+    <string name="ok">確認</string>
+    <string name="cancel">キャンセル</string>
     <string name="year">年</string>
     <string name="month">月</string>
     <string name="day">日</string>
