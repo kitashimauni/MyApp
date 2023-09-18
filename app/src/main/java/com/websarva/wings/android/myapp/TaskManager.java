@@ -81,6 +81,18 @@ public class TaskManager {
         }
     }
 
+    public void updateTask(Task task){
+        task.updated_at = Calendar.getInstance();
+        try{
+            Disposable disposable = taskDao.updateTasks(task)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::loadTasks);
+        } catch (Exception e){
+            Log.e("Error", e.getMessage());
+        }
+    }
+
     public void deleteTask(Task task){
         try {
             Disposable disposable = taskDao.deleteTasks(task)

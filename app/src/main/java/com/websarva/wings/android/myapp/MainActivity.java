@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -112,14 +113,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean backToStart(){
         ActionBar actionBar = getSupportActionBar();
         if(actionBar == null) return false;
-        actionBar.setTitle(R.string.app_name);
-        actionBar.setDisplayHomeAsUpEnabled(false);
         FragmentManager fragmentManager = getSupportFragmentManager();
         if(fragmentManager.getBackStackEntryCount() > 0){
             fragmentManager.popBackStack();
         }
-        showMainMenu = true;
-        invalidateMenu();
+        Log.d("Check", Integer.toString(fragmentManager.getBackStackEntryCount()));
+        if(fragmentManager.getBackStackEntryCount() == 1) {
+            actionBar.setTitle(R.string.app_name);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            showMainMenu = true;
+            invalidateMenu();
+        }
         return true;
     }
 

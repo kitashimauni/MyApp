@@ -106,17 +106,11 @@ public class TasksFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("Test", view.toString());
-                Log.d("-", Integer.toString(i));
-                Log.d("-", Long.toString(l));
-                Log.d("-",((AppCompatTextView)view).getText().toString());
-                Log.d("-", Integer.toString(taskManager.getTasks().get(i).create_at.get(Calendar.DAY_OF_MONTH)));
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(android.R.id.content ,TaskDetailFragment.newInstance(i, ""));
+                fragmentTransaction.add(android.R.id.content ,TaskDetailFragment.newInstance(i, ""), "task_detail_fragment");
                 fragmentTransaction.addToBackStack("show_task_detail");
                 fragmentTransaction.commit();
-
             }
         });
     }

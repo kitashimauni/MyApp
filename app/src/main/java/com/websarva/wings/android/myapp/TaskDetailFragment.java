@@ -10,6 +10,7 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
 import android.view.LayoutInflater;
@@ -44,6 +45,8 @@ public class TaskDetailFragment extends Fragment implements NoticeDialogFragment
     private TaskManager taskManager;
 
     private Task task;
+
+    private boolean showMenu = true;
 
     public TaskDetailFragment() {
         // Required empty public constructor
@@ -94,26 +97,21 @@ public class TaskDetailFragment extends Fragment implements NoticeDialogFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         taskManager = activity.getTaskManager();
-        task = taskManager.getTask(position);
-        TextView title_name = view.findViewById(R.id.detail_title_name);
-        TextView deadline = view.findViewById(R.id.detail_deadline);
-        TextView detail = view.findViewById(R.id.detail_detail);
-        title_name.setText(task.getTask_name());
-        detail.setText(task.getTask_detail());
-        Calendar calendar = task.getDead_line();
-        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY), minute = calendar.get(Calendar.MINUTE);
-        String string = calendar.get(Calendar.YEAR) + getString(R.string.year) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.month) + calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.day)
-                + " " + (hourOfDay < 10 ? ("0" + hourOfDay) : hourOfDay) + ":" + (minute < 10 ? ("0" + minute) : minute);
-        deadline.setText(string);
-
-        NoticeDialogFragment noticeDialogFragment = new NoticeDialogFragment();
+        loadTask();
 
         activity.setupBackButton("詳細");
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
+            public void onPrepareMenu(@NonNull Menu menu) {
+                MenuProvider.super.onPrepareMenu(menu);
+                menu.findItem(R.id.delete_task_button).setVisible(showMenu);
+                menu.findItem(R.id.edit_task_button).setVisible(showMenu);
+            }
+
+            @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.task_edit_option, menu);
+                menuInflater.inflate(R.menu.task_detail_option, menu);
             }
 
             @Override
@@ -122,8 +120,16 @@ public class TaskDetailFragment extends Fragment implements NoticeDialogFragment
                     case android.R.id.home:
                         return activity.backToStart();
                     case R.id.delete_task_button:
+                        NoticeDialogFragment noticeDialogFragment = new NoticeDialogFragment();
+                        noticeDialogFragment.show(activity.getSupportFragmentManager(), "NoticeDialog");
+                        break;
+                    case R.id.edit_task_button:
                         FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                        noticeDialogFragment.show(fragmentManager, "NoticeDialog");
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.add(android.R.id.content ,TaskEditFragment.newInstance(position, ""));
+                        fragmentTransaction.addToBackStack("edit_task");
+                        fragmentTransaction.commit();
+                        break;
                 }
                 return false;
             }
@@ -137,5 +143,27 @@ public class TaskDetailFragment extends Fragment implements NoticeDialogFragment
         toast.setText("削除しました");
         toast.show();
         activity.backToStart();
+    }
+
+    public void setShowMenu(boolean showMenu) {
+        this.showMenu = showMenu;
+    }
+
+    public void loadTask(){
+        task = taskManager.getTask(position);
+        TextView title_name = activity.findViewById(R.id.detail_title_name);
+        TextView deadline = activity.findViewById(R.id.detail_deadline);
+        TextView detail = activity.findViewById(R.id.detail_detail);
+        title_name.setText(task.getTask_name());
+        detail.setText(task.getTask_detail());
+        Calendar calendar = task.getDead_line();
+        if(task.has_deadline()) {
+            int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY), minute = calendar.get(Calendar.MINUTE);
+            String string = calendar.get(Calendar.YEAR) + getString(R.string.year) + (calendar.get(Calendar.MONTH) + 1) + getString(R.string.month) + calendar.get(Calendar.DAY_OF_MONTH) + getString(R.string.day)
+                    + " " + (hourOfDay < 10 ? ("0" + hourOfDay) : hourOfDay) + ":" + (minute < 10 ? ("0" + minute) : minute);
+            deadline.setText(string);
+        } else {
+            deadline.setText("期限なし");
+        }
     }
 }

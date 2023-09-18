@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "faff4ef3be8f3464036eb2677e16faae",
+    "identityHash": "94dd152a9b14725fefd09b8da69c0a8f",
     "entities": [
       {
         "tableName": "Task",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `task_name` TEXT, `task_detail` TEXT, `create_at` INTEGER, `updated_at` INTEGER, `dead_line` INTEGER, `finished` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `task_name` TEXT, `task_detail` TEXT, `create_at` INTEGER, `updated_at` INTEGER, `dead_line` INTEGER, `has_deadline` INTEGER NOT NULL, `all_day` INTEGER NOT NULL, `finished` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -45,6 +45,18 @@
             "notNull": false
           },
           {
+            "fieldPath": "has_deadline",
+            "columnName": "has_deadline",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "all_day",
+            "columnName": "all_day",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "finished",
             "columnName": "finished",
             "affinity": "INTEGER",
@@ -64,7 +76,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'faff4ef3be8f3464036eb2677e16faae')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '94dd152a9b14725fefd09b8da69c0a8f')"
     ]
   }
 }
