@@ -206,6 +206,7 @@ public class TaskEditFragment extends Fragment {
             TaskDetailFragment taskDetailFragment = (TaskDetailFragment) activity.getSupportFragmentManager().findFragmentByTag("task_detail_fragment");
             if(taskDetailFragment != null){
                 taskDetailFragment.setShowMenu(true);
+                activity.invalidateMenu();
                 taskDetailFragment.loadTask();
             }
             Log.d("Check", this + " : ActionBar is not null");
