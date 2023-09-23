@@ -2,8 +2,11 @@ package com.websarva.wings.android.myapp;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,8 @@ public class TimetableFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private MainActivity activity;
 
     public TimetableFragment() {
         // Required empty public constructor
@@ -54,6 +59,10 @@ public class TimetableFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        activity = (MainActivity) getActivity();
+        if(activity==null){
+            Log.e("null", "activity is null in " + this);
+        }
     }
 
     @Override
@@ -61,5 +70,11 @@ public class TimetableFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_timetable, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        TimeTableManager timeTableManager = activity.getTimeTableManager();
+        timeTableManager.loadItemFromFile();
     }
 }

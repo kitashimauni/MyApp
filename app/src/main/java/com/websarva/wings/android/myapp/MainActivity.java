@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public TaskDao taskDao;
 
     private TaskManager taskManager;
+    private TimeTableManager timeTableManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
         taskManager = new TaskManager(this);
         taskManager.setTaskDao(taskDao);
         }
+        if(timeTableManager == null){
+            timeTableManager = new TimeTableManager();
+        }
     }
 
     @Override
@@ -129,6 +133,10 @@ public class MainActivity extends AppCompatActivity {
 
     public TaskManager getTaskManager(){
         return taskManager;
+    }
+
+    public TimeTableManager getTimeTableManager() {
+        return timeTableManager;
     }
 
     public void setKeyboardHider(EditText editText){
