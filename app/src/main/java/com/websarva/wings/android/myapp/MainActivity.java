@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         taskManager.setTaskDao(taskDao);
         }
         if(timeTableManager == null){
-            timeTableManager = new TimeTableManager();
+            timeTableManager = new TimeTableManager(this);
         }
     }
 

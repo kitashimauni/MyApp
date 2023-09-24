@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,6 +76,8 @@ public class TimetableFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         TimeTableManager timeTableManager = activity.getTimeTableManager();
-        timeTableManager.loadItemFromFile();
+        timeTableManager.loadItemsFromFile();
+        GridView gridView = view.findViewById(R.id.table_grid_layout);
+        // gridView.setAdapter();
     }
 }
