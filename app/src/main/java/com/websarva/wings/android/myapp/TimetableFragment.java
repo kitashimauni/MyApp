@@ -78,6 +78,6 @@ public class TimetableFragment extends Fragment {
         TimeTableManager timeTableManager = activity.getTimeTableManager();
         timeTableManager.loadItemsFromFile();
         GridView gridView = view.findViewById(R.id.table_grid_layout);
-        // gridView.setAdapter();
+        gridView.setAdapter(timeTableManager.getTimeTableGridAdapter());
     }
 }

@@ -33,6 +33,10 @@ public class TimeTableManager {
         return timeTableGridAdapter;
     }
 
+    public List<TimeTableItem> getTableItemList() {
+        return tableItemList;
+    }
+
     public void loadItemsFromFile(){
         try (FileReader fileReader = new FileReader("timetable.json")) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
