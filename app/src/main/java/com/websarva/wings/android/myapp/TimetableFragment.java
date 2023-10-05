@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.GridView;
 
 /**
@@ -77,7 +78,13 @@ public class TimetableFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         TimeTableManager timeTableManager = activity.getTimeTableManager();
         timeTableManager.loadItemsFromFile();
-        GridView gridView = view.findViewById(R.id.table_grid_layout);
-        gridView.setAdapter(timeTableManager.getTimeTableGridAdapter());
+        timeTableManager.getTimeTableGridAdapter().initView(view.findViewById(R.id.table_grid_layout));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        TimeTableManager timeTableManager = activity.getTimeTableManager();
+        timeTableManager.saveItemsToFile();
     }
 }

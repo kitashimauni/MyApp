@@ -2,6 +2,8 @@ package com.websarva.wings.android.myapp;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.TableLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,7 +28,7 @@ public class TimeTableManager {
     }
 
     public void setTimeTableGridAdapter(Context context, int layout) {
-        this.timeTableGridAdapter = new TimeTableGridAdapter(context, layout, this);
+        this.timeTableGridAdapter = new TimeTableGridAdapter(context, layout, this, activity);
     }
 
     public TimeTableGridAdapter getTimeTableGridAdapter() {
@@ -36,6 +38,16 @@ public class TimeTableManager {
     public List<TimeTableItem> getTableItemList() {
         return tableItemList;
     }
+
+    public TimeTableItem getTableItem(int dayOfWeek, int period){
+        for(TimeTableItem item : tableItemList){
+            if(item.getDay_of_week() == dayOfWeek && item.getPeriod() == period){
+                return item;
+            }
+        }
+        return null;
+    }
+
 
     public void loadItemsFromFile(){
         try (FileReader fileReader = new FileReader("timetable.json")) {

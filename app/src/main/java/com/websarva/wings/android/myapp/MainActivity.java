@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(timeTableManager == null){
             timeTableManager = new TimeTableManager(this);
+            timeTableManager.setTimeTableGridAdapter(getApplicationContext(), R.layout.timetable_item);
         }
     }
 

@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".TimetableFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -83,19 +84,19 @@
         </GridLayout>
 
         <GridLayout
-            android:id="@+id/table_grid_layout"
-            android:layout_width="0dp"
+            android:id="@+id/period_grid_layout"
+            android:layout_width="30dp"
             android:layout_height="0dp"
-            android:columnCount="5"
+            android:columnCount="1"
             android:rowCount="6"
             app:layout_constraintTop_toBottomOf="@id/day_of_week_grid_layout"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toStartOf="@id/table_grid_layout"
+            app:layout_constraintStart_toStartOf="parent" >
 
             <TextView
                 android:text="@string/first"
-                android:layout_width="30dp"
+                android:layout_width="match_parent"
                 android:layout_column="0"
                 android:layout_columnSpan="1"
                 android:layout_row="0"
@@ -105,7 +106,7 @@
 
             <TextView
                 android:text="@string/second"
-                android:layout_width="30dp"
+                android:layout_width="match_parent"
                 android:layout_column="0"
                 android:layout_columnSpan="1"
                 android:layout_row="1"
@@ -115,7 +116,7 @@
 
             <TextView
                 android:text="@string/third"
-                android:layout_width="30dp"
+                android:layout_width="match_parent"
                 android:layout_column="0"
                 android:layout_columnSpan="1"
                 android:layout_row="2"
@@ -125,7 +126,7 @@
 
             <TextView
                 android:text="@string/fourth"
-                android:layout_width="30dp"
+                android:layout_width="match_parent"
                 android:layout_column="0"
                 android:layout_columnSpan="1"
                 android:layout_row="3"
@@ -135,7 +136,7 @@
 
             <TextView
                 android:text="@string/fifth"
-                android:layout_width="30dp"
+                android:layout_width="match_parent"
                 android:layout_column="0"
                 android:layout_columnSpan="1"
                 android:layout_row="4"
@@ -145,7 +146,7 @@
 
             <TextView
                 android:text="@string/sixth"
-                android:layout_width="30dp"
+                android:layout_width="match_parent"
                 android:layout_column="0"
                 android:layout_columnSpan="1"
                 android:layout_row="5"
@@ -153,7 +154,20 @@
                 android:layout_rowWeight="1"
                 android:gravity="center"/>
 
+        </GridLayout>
 
+        <GridLayout
+            android:id="@+id/table_grid_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:columnCount="5"
+            android:rowCount="6"
+            app:layout_constraintTop_toBottomOf="@id/day_of_week_grid_layout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/period_grid_layout"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!--
             <TextView
                 android:text="テスト"
                 android:layout_column="1"
@@ -193,6 +207,7 @@
                 android:layout_rowSpan="1"
                 android:layout_rowWeight="1"
                 android:gravity="center" />
+           -->
 
 
         </GridLayout>

@@ -5,6 +5,7 @@ public class TimeTableItem {
     private int day_of_week;
     private int period;
     private String place;
+    private int length;
 
     public void setSubject_name(String subject_name) {
         this.subject_name = subject_name;
@@ -22,6 +23,10 @@ public class TimeTableItem {
         this.place = place;
     }
 
+    public void setLength(int length) {
+        this.length = length;
+    }
+
     public String getSubject_name() {
         return subject_name;
     }
@@ -36,5 +41,9 @@ public class TimeTableItem {
 
     public String getPlace() {
         return place;
+    }
+
+    public int getLength() {
+        return length;
     }
 }
