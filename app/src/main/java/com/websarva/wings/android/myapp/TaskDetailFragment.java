@@ -121,7 +121,8 @@ public class TaskDetailFragment extends Fragment implements NoticeDialogFragment
                         return activity.backToStart();
                     case R.id.delete_task_button:
                         NoticeDialogFragment noticeDialogFragment = new NoticeDialogFragment();
-                        noticeDialogFragment.show(activity.getSupportFragmentManager(), "NoticeDialog");
+                        noticeDialogFragment.setMessage(activity.getString(R.string.ask_delete));
+                        noticeDialogFragment.show(getChildFragmentManager(), "NoticeDialog");
                         break;
                     case R.id.edit_task_button:
                         FragmentManager fragmentManager = activity.getSupportFragmentManager();

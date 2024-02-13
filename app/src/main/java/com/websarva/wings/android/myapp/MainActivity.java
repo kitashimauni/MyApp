@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -63,6 +64,22 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.add(android.R.id.content ,TaskAddFragment.newInstance("", ""));
             fragmentTransaction.addToBackStack("add_task");
             fragmentTransaction.commit();
+        });
+        // 時間割に移動したらFABを消す
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Log.d("message","移動した:" + position);
+                switch (position){
+                    case 0:
+                        fab.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        fab.setVisibility(View.INVISIBLE);
+                        break;
+                }
+            }
         });
 
         addMenuProvider(new MenuProvider() {

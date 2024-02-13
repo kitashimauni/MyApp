@@ -1,5 +1,7 @@
 package com.websarva.wings.android.myapp;
 
+import android.content.Context;
+
 public class TimeTableItem {
     private String subject_name;
     private int day_of_week;
@@ -45,5 +47,22 @@ public class TimeTableItem {
 
     public int getLength() {
         return length;
+    }
+
+    public static String int_to_day_of_week(Context context, int num){
+        switch (num){
+            case 0:
+                return context.getString(R.string.monday);
+            case 1:
+                return context.getString(R.string.tuesday);
+            case 2:
+                return context.getString(R.string.wednesday);
+            case 3:
+                return context.getString(R.string.thursday);
+            case 4:
+                return context.getString(R.string.friday);
+            default:
+                return "";
+        }
     }
 }

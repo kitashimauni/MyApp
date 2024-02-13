@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -12,13 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TimetableFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TimetableFragment extends Fragment {
+public class TimetableFragment extends Fragment implements NoticeDialogFragment.NoticeDialogListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -78,7 +80,14 @@ public class TimetableFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         TimeTableManager timeTableManager = activity.getTimeTableManager();
         timeTableManager.loadItemsFromFile();
-        timeTableManager.getTimeTableGridAdapter().initView(view.findViewById(R.id.table_grid_layout));
+        timeTableManager.getTimeTableGridAdapter().initView(this, view.findViewById(R.id.table_grid_layout));
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialogFragment) {
+        Toast toast = new Toast(dialogFragment.getContext());
+        toast.setText("編集");
+        toast.show();
     }
 
     @Override

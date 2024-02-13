@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +39,7 @@ public class TimeTableGridAdapter {
         tableItemViewList = new ArrayList<>();
     }
 
-    public void initView(GridLayout gridLayout){
+    public void initView(Fragment fragment, GridLayout gridLayout){
         for(int dayOfWeek = 0; dayOfWeek < 5; dayOfWeek++){
             for(int period = 0; period < 6; period++){
                 ViewHolder holder = new ViewHolder();
@@ -62,6 +66,12 @@ public class TimeTableGridAdapter {
                 view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
+                        ViewHolder holder = (ViewHolder) v.getTag();
+                        NoticeDialogFragment noticeDialogFragment = new NoticeDialogFragment();
+                        noticeDialogFragment.setMessage("編集しますか?\n"+
+                                "(" + TimeTableItem.int_to_day_of_week(v.getContext(), holder.dayOfWeek) + "曜日" +
+                                (holder.period + 1) + "限目)");
+                        noticeDialogFragment.show(fragment.getChildFragmentManager(), "Notice_Edit_TimeTable");
                         return false;
                     }
                 });

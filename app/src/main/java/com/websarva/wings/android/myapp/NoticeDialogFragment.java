@@ -18,11 +18,14 @@ public class NoticeDialogFragment extends DialogFragment {
 
     NoticeDialogListener listener;
 
+    private String message = "";
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try{
-            listener = (NoticeDialogListener) getActivity().getSupportFragmentManager().findFragmentById(android.R.id.content);
+            // listener = (NoticeDialogListener) getActivity().getSupportFragmentManager().findFragmentById(android.R.id.content);
+            listener = (NoticeDialogListener) getParentFragment();
             Log.d("set", Boolean.toString(listener == null));
         } catch (Exception e){
             Log.e("Error", e.getMessage());
@@ -34,14 +37,19 @@ public class NoticeDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.ask_delete)
+        builder.setMessage(message)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        if(listener == null){Log.e("Error", "ここだ");}
                         listener.onDialogPositiveClick(NoticeDialogFragment.this);
                     }
                 })
                 .setNegativeButton(R.string.cancel, null);
         return builder.create();
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
