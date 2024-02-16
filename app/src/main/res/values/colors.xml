@@ -7,8 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="chuosen">#FFFF5722</color>
+    <color name="chuo_line">#FFFF5722</color>
     <color name="clear">#00000000</color>
     <color name="gray">#CACACA</color>
     <color name="clear_green">#C6E89F</color>
+    <color name="background1">#77C5A5</color>
+    <color name="background2">#E6CD72</color>
 </resources>

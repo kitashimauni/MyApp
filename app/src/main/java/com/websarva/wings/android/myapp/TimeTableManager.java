@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,6 +22,8 @@ public class TimeTableManager {
     private TimeTableGridAdapter timeTableGridAdapter;
     private List<TimeTableItem> tableItemList;
     private final MainActivity activity;
+
+    private static final String filepath = "timetable.json";
 
     public TimeTableManager(MainActivity activity){
         tableItemList = new ArrayList<>();
@@ -48,9 +51,23 @@ public class TimeTableManager {
         return null;
     }
 
+    public void addItem(TimeTableItem item){
+        if(!tableItemList.contains(item)){
+            tableItemList.add(item);
+        }
+    }
 
-    public void loadItemsFromFile(){
-        try (FileReader fileReader = new FileReader("timetable.json")) {
+    public void deleteItem(int dayOfWeek, int period){
+        tableItemList.removeIf(item -> (item.getDay_of_week() == dayOfWeek && item.getPeriod() == period));
+    }
+
+    public void notifyDataSetChanged(){
+        timeTableGridAdapter.setView();
+    }
+
+    public void loadItemsFromFile(Context context){
+        File file = new File(context.getFilesDir(), filepath);
+        try (FileReader fileReader = new FileReader(file)) {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             StringBuilder stringBuilder = new StringBuilder();
             String line;
@@ -74,11 +91,12 @@ public class TimeTableManager {
         }
     }
 
-    public void saveItemsToFile(){
+    public void saveItemsToFile(Context context){
         Gson gson = new Gson();
         String json = gson.toJson(tableItemList);
+        File file = new File(context.getFilesDir(), filepath);
 
-        try(FileWriter fileWriter = new FileWriter("timetable.json")){
+        try(FileWriter fileWriter = new FileWriter(file)){
             fileWriter.write(json);
         } catch (IOException e){
             Log.e("Error", "IOException in " + this);

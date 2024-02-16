@@ -1,26 +1,27 @@
 package com.websarva.wings.android.myapp;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link TimetableFragment#newInstance} factory method to
+ * Use the {@link TimeTableFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TimetableFragment extends Fragment implements NoticeDialogFragment.NoticeDialogListener {
+public class TimeTableFragment extends Fragment implements NoticeDialogFragment.NoticeDialogListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,8 +33,9 @@ public class TimetableFragment extends Fragment implements NoticeDialogFragment.
     private String mParam2;
 
     private MainActivity activity;
+    private Context context;
 
-    public TimetableFragment() {
+    public TimeTableFragment() {
         // Required empty public constructor
     }
 
@@ -47,8 +49,8 @@ public class TimetableFragment extends Fragment implements NoticeDialogFragment.
      * @return A new instance of fragment TimetableFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TimetableFragment newInstance(String param1, String param2) {
-        TimetableFragment fragment = new TimetableFragment();
+    public static TimeTableFragment newInstance(String param1, String param2) {
+        TimeTableFragment fragment = new TimeTableFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,6 +69,10 @@ public class TimetableFragment extends Fragment implements NoticeDialogFragment.
         if(activity==null){
             Log.e("null", "activity is null in " + this);
         }
+        context = getContext();
+        if(context == null){
+            Log.e("null", "context is null in" + this);
+        }
     }
 
     @Override
@@ -79,21 +85,24 @@ public class TimetableFragment extends Fragment implements NoticeDialogFragment.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         TimeTableManager timeTableManager = activity.getTimeTableManager();
-        timeTableManager.loadItemsFromFile();
+        timeTableManager.loadItemsFromFile(context);
         timeTableManager.getTimeTableGridAdapter().initView(this, view.findViewById(R.id.table_grid_layout));
     }
 
     @Override
-    public void onDialogPositiveClick(DialogFragment dialogFragment) {
-        Toast toast = new Toast(dialogFragment.getContext());
-        toast.setText("編集");
-        toast.show();
+    public void onDialogPositiveClick(DialogFragment dialogFragment, Bundle data) {
+        int dayOfWeek = data.getInt("dayOfWeek"), period =  data.getInt("period");
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(android.R.id.content, TimeTableEditFragment.newInstance(dayOfWeek, period), "timetable_edit_fragment");
+        fragmentTransaction.addToBackStack("edit_timetable");
+        fragmentTransaction.commit();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         TimeTableManager timeTableManager = activity.getTimeTableManager();
-        timeTableManager.saveItemsToFile();
+        timeTableManager.saveItemsToFile(context);
     }
 }

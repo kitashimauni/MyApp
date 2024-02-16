@@ -13,12 +13,13 @@ import androidx.fragment.app.DialogFragment;
 
 public class NoticeDialogFragment extends DialogFragment {
     public interface NoticeDialogListener{
-        public void onDialogPositiveClick(DialogFragment dialogFragment);
+        public void onDialogPositiveClick(DialogFragment dialogFragment, Bundle data);
     }
 
     NoticeDialogListener listener;
 
     private String message = "";
+    private Bundle data = null;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -41,8 +42,8 @@ public class NoticeDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(listener == null){Log.e("Error", "ここだ");}
-                        listener.onDialogPositiveClick(NoticeDialogFragment.this);
+                        if(listener == null){Log.e("Error", "listener is null in " + this);}
+                        listener.onDialogPositiveClick(NoticeDialogFragment.this, data);
                     }
                 })
                 .setNegativeButton(R.string.cancel, null);
@@ -51,5 +52,8 @@ public class NoticeDialogFragment extends DialogFragment {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+    public void setData(Bundle data){
+        this.data = data;
     }
 }

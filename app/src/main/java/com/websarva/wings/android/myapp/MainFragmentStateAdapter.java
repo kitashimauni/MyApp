@@ -14,7 +14,7 @@ public class MainFragmentStateAdapter extends FragmentStateAdapter {
     @NonNull
     public Fragment createFragment(int position){
         if (position == 1)
-            return new TimetableFragment();
+            return new TimeTableFragment();
         else
             return new TasksFragment();
     }

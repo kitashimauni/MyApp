@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Log.d("message","移動した:" + position);
                 switch (position){
                     case 0:
                         fab.setVisibility(View.VISIBLE);
@@ -106,10 +105,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(taskDao == null) {
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tasks").build();
-        taskDao = db.taskDao();
-        taskManager = new TaskManager(this);
-        taskManager.setTaskDao(taskDao);
+            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "tasks").build();
+            taskDao = db.taskDao();
+            taskManager = new TaskManager(this);
+            taskManager.setTaskDao(taskDao);
         }
         if(timeTableManager == null){
             timeTableManager = new TimeTableManager(this);
@@ -122,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    // 戻るボタンを追加する
     public void setupBackButton(String title){
         ActionBar actionBar = getSupportActionBar();
         if(actionBar == null) return;
@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
         invalidateMenu();
     }
 
+    // Fragmentを1つ戻る
     public boolean backToStart(){
         ActionBar actionBar = getSupportActionBar();
         if(actionBar == null) return false;
