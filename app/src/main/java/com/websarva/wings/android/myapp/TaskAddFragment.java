@@ -198,6 +198,11 @@ public class TaskAddFragment extends Fragment {
                         // addするTaskの作成
                         Task task = new Task();
                         task.task_name = text_name.getText().toString();
+                        if(task.task_name.isEmpty()){
+                            Toast toast = Toast.makeText(getContext(), "タスク名を入力してください", Toast.LENGTH_SHORT);
+                            toast.show();
+                            return false;
+                        }
                         task.task_detail = text_detail.getText().toString();
                         if(deadline_all_day_switch.isChecked()){
                             calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 23, 59, 59);

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 
@@ -18,13 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TimeTableEditFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TimeTableEditFragment extends Fragment {
+public class TimeTableEditFragment extends Fragment implements NoticeDialogFragment.NoticeDialogListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -127,10 +129,19 @@ public class TimeTableEditFragment extends Fragment {
                     place.setText("");
                     detail_text.setText("");
                 } else if(menuItem.getItemId() == R.id.delete_timetable_button){
-                    timeTableManager.deleteItem(dayOfWeek, period);
-                    timeTableManager.notifyDataSetChanged();
-                    return activity.backToStart();
+                    Bundle data = new Bundle();
+                    data.putInt("dayOfWeek", dayOfWeek);
+                    data.putInt("period", period);
+                    NoticeDialogFragment dialogFragment = new NoticeDialogFragment();
+                    dialogFragment.setMessage(getString(R.string.ask_delete));
+                    dialogFragment.setData(data);
+                    dialogFragment.show(getChildFragmentManager(), "notice_delete_item");
                 } else if(menuItem.getItemId() == R.id.update_timetable_button){
+                    if(subjectName.getText().toString().isEmpty()){
+                        Toast toast = Toast.makeText(getContext(), "科目名を入力してください", Toast.LENGTH_SHORT);
+                        toast.show();
+                        return false;
+                    }
                     tableItem.setSubject_name(subjectName.getText().toString());
                     tableItem.setPlace(place.getText().toString());
                     tableItem.setDetail(detail_text.getText().toString());
@@ -141,5 +152,12 @@ public class TimeTableEditFragment extends Fragment {
                 return false;
             }
         }, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialogFragment, Bundle data) {
+        timeTableManager.deleteItem(data.getInt("dayOfWeek"), data.getInt("period"));
+        timeTableManager.notifyDataSetChanged();
+        activity.backToStart();
     }
 }

@@ -1,6 +1,7 @@
 package com.websarva.wings.android.myapp;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,8 @@ public class TaskListAdapter extends ArrayAdapter {
         Task item = _tasks.get(position);
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
         textView.setText(item.task_name);
+        textView.setMaxLines(2);
+        textView.setEllipsize(TextUtils.TruncateAt.END);
 
         return view;
     }

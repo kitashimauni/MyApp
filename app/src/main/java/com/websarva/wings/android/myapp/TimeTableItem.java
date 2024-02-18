@@ -2,6 +2,8 @@ package com.websarva.wings.android.myapp;
 
 import android.content.Context;
 
+import java.io.Serializable;
+
 public class TimeTableItem {
     private String subject_name;
     private int day_of_week;

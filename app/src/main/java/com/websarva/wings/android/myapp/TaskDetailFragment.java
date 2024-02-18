@@ -140,8 +140,7 @@ public class TaskDetailFragment extends Fragment implements NoticeDialogFragment
     @Override
     public void onDialogPositiveClick(DialogFragment dialogFragment, Bundle data) {
         taskManager.deleteTask(task);
-        Toast toast = new Toast(getContext());
-        toast.setText("削除しました");
+        Toast toast = Toast.makeText(getContext(), "削除しました", Toast.LENGTH_SHORT);
         toast.show();
         activity.backToStart();
     }
