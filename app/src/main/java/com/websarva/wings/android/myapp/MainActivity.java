@@ -1,10 +1,16 @@
 package com.websarva.wings.android.myapp;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -12,7 +18,12 @@ import androidx.room.Room;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -41,12 +52,13 @@ public class MainActivity extends AppCompatActivity {
 
     private TaskManager taskManager;
     private TimeTableManager timeTableManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // アクションバーの設定
-        Toolbar toolbar  = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // ViewPagerの設定
         viewPager2 = findViewById(R.id.pager);
@@ -61,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(v -> {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(android.R.id.content ,TaskAddFragment.newInstance("", ""));
+            fragmentTransaction.add(android.R.id.content, TaskAddFragment.newInstance("", ""));
             fragmentTransaction.addToBackStack("add_task");
             fragmentTransaction.commit();
         });
@@ -70,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                switch (position){
+                switch (position) {
                     case 0:
                         fab.setVisibility(View.VISIBLE);
                         break;
@@ -90,15 +102,20 @@ public class MainActivity extends AppCompatActivity {
                 item_1.setVisible(showMainMenu);
                 item_2.setVisible(showMainMenu);
             }
+
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.main_option, menu);
             }
+
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 return false;
             }
         });
+
+        checkNotificationPermission();
+        postNotify("タイトル", "メッセージ");
     }
 
     @Override
@@ -178,5 +195,54 @@ public class MainActivity extends AppCompatActivity {
         // if(!(getCurrentFocus() instanceof EditText)){
         layout.requestFocus();
         return super.dispatchTouchEvent(event);
+    }
+
+    private void checkNotificationPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel =
+                    new NotificationChannel("1", getString(R.string.app_name), importance);
+
+            channel.setDescription("説明");
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public boolean postNotify(String title, String message){
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, "1")
+                        .setSmallIcon(android.R.drawable.ic_menu_info_details)
+                        .setContentTitle(title)
+                        .setContentText(message)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED){
+                if (!shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)){
+                    Toast toast = Toast.makeText(this,"通知の権限がありません", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    ActivityResultLauncher<String> requestPermissionLauncher =
+                            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->{
+                                Toast toast;
+                                if(isGranted){
+                                    toast = Toast.makeText(this, "通知が許可されました", Toast.LENGTH_SHORT);
+                                } else {
+                                    toast = Toast.makeText(this, "通知が許可されませんでした", Toast.LENGTH_SHORT);
+                                }
+                                toast.show();
+                            });
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                }
+            }
+        }
+        notificationManager.notify(R.string.app_name, builder.build());
+        return true;
     }
 }
